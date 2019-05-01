@@ -36,6 +36,8 @@ public class Homepage extends javax.swing.JFrame {
 
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -62,10 +64,27 @@ public class Homepage extends javax.swing.JFrame {
         });
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 10, 34, 40));
 
+        jButton6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton6.setForeground(new java.awt.Color(0, 0, 204));
+        jButton6.setText("Register");
+        jButton6.setMaximumSize(new java.awt.Dimension(71, 25));
+        jButton6.setMinimumSize(new java.awt.Dimension(71, 25));
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 80, 120, 50));
+
+        jButton5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(0, 0, 204));
+        jButton5.setText("Login");
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 80, 70, 50));
+
         jLabel2.setFont(new java.awt.Font("Tahoma", 3, 45)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 0));
         jLabel2.setText("Welcome to TechStore");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1250, 90));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 760, 90));
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/computer-macbook-air-business-desktop.jpg"))); // NOI18N
@@ -81,6 +100,10 @@ public class Homepage extends javax.swing.JFrame {
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         System.exit(0);
     }//GEN-LAST:event_jLabel4MouseClicked
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -118,6 +141,8 @@ public class Homepage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

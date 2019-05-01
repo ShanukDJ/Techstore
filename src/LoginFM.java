@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
  */
 public class LoginFM extends javax.swing.JFrame {
 
+    
+
     /**
      * Creates new form LoginFM
      */
@@ -38,7 +40,7 @@ public class LoginFM extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel1Rglink = new javax.swing.JLabel();
         LoginREset = new javax.swing.JButton();
-        loginUN = new javax.swing.JTextField();
+        loginEM = new javax.swing.JTextField();
         logLogin = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         loginPSWD = new javax.swing.JPasswordField();
@@ -52,8 +54,8 @@ public class LoginFM extends javax.swing.JFrame {
         jLabel6.setBackground(new java.awt.Color(0, 128, 0));
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel6.setText("UserName:");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 220, 110, 60));
+        jLabel6.setText("Email Address:");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 180, 140, 60));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 153, 0));
@@ -84,7 +86,7 @@ public class LoginFM extends javax.swing.JFrame {
                 jLabel1RglinkMouseClicked(evt);
             }
         });
-        getContentPane().add(jLabel1Rglink, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, -1, -1));
+        getContentPane().add(jLabel1Rglink, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 530, -1, -1));
 
         LoginREset.setBackground(new java.awt.Color(255, 153, 51));
         LoginREset.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -94,8 +96,8 @@ public class LoginFM extends javax.swing.JFrame {
                 LoginREsetActionPerformed(evt);
             }
         });
-        getContentPane().add(LoginREset, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 420, 150, 60));
-        getContentPane().add(loginUN, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 230, 250, 50));
+        getContentPane().add(LoginREset, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 370, 150, 60));
+        getContentPane().add(loginEM, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 190, 280, 50));
 
         logLogin.setBackground(new java.awt.Color(51, 51, 255));
         logLogin.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -105,19 +107,19 @@ public class LoginFM extends javax.swing.JFrame {
                 logLoginActionPerformed(evt);
             }
         });
-        getContentPane().add(logLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 420, 150, 60));
+        getContentPane().add(logLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 370, 150, 60));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(255, 0, 0));
         jLabel10.setText("Password:");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 330, 110, 30));
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 280, 110, 30));
 
         loginPSWD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginPSWDActionPerformed(evt);
             }
         });
-        getContentPane().add(loginPSWD, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 330, 250, 50));
+        getContentPane().add(loginPSWD, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 270, 280, 50));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 3, 45)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 0));
@@ -127,7 +129,7 @@ public class LoginFM extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 153, 0));
         jLabel3.setText("Login Form");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 110, 240, 60));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 60, 240, 60));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/computer-macbook-air-business-desktop.jpg"))); // NOI18N
         jLabel1.setText("jLabel1");
@@ -138,24 +140,70 @@ public class LoginFM extends javax.swing.JFrame {
 
     private void logLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logLoginActionPerformed
         HttpConnector hc = new HttpConnector();
-        User user;
-        try {
-            user = hc.login(loginUN.getText(), loginPSWD.getText());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Login failure");
+        User user = null;
+             
+             String em = loginEM.getText();
+             String pswd = loginPSWD.getText();
+             
+         
+          
+                if((em.equals("") && pswd.equals(""))){
+                    JOptionPane.showMessageDialog(null, "Please enter the login details!");
+                 }
+                 
+          try{
+               user = hc.login(loginEM.getText(), loginPSWD.getText());
+               if(user.getUserType().equals("Admin")){
+                    Accounts ac = new Accounts(user);
+                    ac.setVisible(true);
+                    ac.pack();
+                    ac.setLocationRelativeTo(null);
+                    ac.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    this.dispose();
+               }
+               else if(user.getUserType().equals("Deliver")){
+                    tempDELIVER td = new tempDELIVER(user);
+                    td.setVisible(true);
+                    td.pack();
+                    td.setLocationRelativeTo(null);
+                    td.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    this.dispose();
+               }
+                else if(user.getUserType().equals("Seller")){
+                    tempSELLER ts = new tempSELLER(user);
+                    ts.setVisible(true);
+                    ts.pack();
+                    ts.setLocationRelativeTo(null);
+                    ts.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    this.dispose();
+                }
+               else if(user.getUserType().equals("Buyer")){
+                    tempBUYER tb = new tempBUYER(user);
+                    tb.setVisible(true);
+                    tb.pack();
+                    tb.setLocationRelativeTo(null);
+                    tb.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    this.dispose();
+               }
+               else{
+               
+               JOptionPane.showMessageDialog(null, "User type error","Error", JOptionPane.ERROR_MESSAGE);
+               
+               }
+               
+          }
+         catch (Exception ex) {
+             System.out.println("ERROR: " + ex.getMessage());
+             ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Login failure.Try again!","Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        Homepage sp = new Homepage(user);
-        sp.setVisible(true);
-        sp.pack();
-        sp.setLocationRelativeTo(null);
-        sp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.dispose();
+       
     }//GEN-LAST:event_logLoginActionPerformed
 
     private void LoginREsetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginREsetActionPerformed
-           loginUN.setText("");
+           loginEM.setText("");
            loginPSWD.setText("");
            LoginREset.setSelected(false);
     }//GEN-LAST:event_LoginREsetActionPerformed
@@ -228,7 +276,7 @@ public class LoginFM extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JButton logLogin;
+    private javax.swing.JTextField loginEM;
     private javax.swing.JPasswordField loginPSWD;
-    private javax.swing.JTextField loginUN;
     // End of variables declaration//GEN-END:variables
 }

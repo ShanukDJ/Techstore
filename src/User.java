@@ -1,6 +1,7 @@
 
 public class User {
 
+    
     public Integer getId() {
         return id;
     }
@@ -41,10 +42,20 @@ public class User {
         this.password = password;
     }
 
-    private Integer id;
-    private String email;
-    private String fullName;
+  
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
     private String userType;
     private String password;
 
+
+    private Integer id;
+    private String email;
+    private String fullName;
+    private String phoneNumber;
 }

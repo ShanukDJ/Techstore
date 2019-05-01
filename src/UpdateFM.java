@@ -1,6 +1,12 @@
-
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
+import java.util.regex.Pattern;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.regex.Matcher;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,12 +19,25 @@ import javax.swing.JOptionPane;
  * @author SNDJ
  */
 public class UpdateFM extends javax.swing.JFrame {
-
+    private HttpConnector hc = new HttpConnector();
+    private User user;
     /**
      * Creates new form UpdateFM
      */
     public UpdateFM() {
         initComponents();
+    }
+
+    UpdateFM(User user) {
+        this.user = user;
+        initComponents(); 
+        
+        fullnme.setText(user.getFullName());
+        email.setText(user.getEmail());
+        phone_num.setText(user.getPhoneNumber());
+        updtePswd.setText(user.getPassword());
+        updteConfrmPswd.setText(user.getPassword());
+        
     }
 
     /**
@@ -30,31 +49,31 @@ public class UpdateFM extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        regusrname = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         fullnme = new javax.swing.JTextField();
-        regPswd = new javax.swing.JPasswordField();
-        regConfrmPswd = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        updtePswd = new javax.swing.JPasswordField();
+        updteConfrmPswd = new javax.swing.JPasswordField();
+        Update = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        updtePSWDlab = new javax.swing.JLabel();
         reset = new javax.swing.JButton();
+        updtFNlab = new javax.swing.JLabel();
+        updtePNlab = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        phone_num = new javax.swing.JTextField();
+        updteEmlab = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        updteCNFMPSWDlab = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         email = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel6.setText("UserID:");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 170, 90, 20));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 0, 0));
@@ -69,32 +88,17 @@ public class UpdateFM extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 0, 0));
         jLabel9.setText("Email Address:");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 300, -1, -1));
-
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel10.setText("User Name:");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 370, 110, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 310, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 0, 0));
         jLabel11.setText("Password:");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 440, 90, -1));
-
-        regusrname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                regusrnameActionPerformed(evt);
-            }
-        });
-        getContentPane().add(regusrname, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 360, 330, 50));
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 150, 330, 50));
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 470, 90, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 0, 0));
         jLabel12.setText("Confirm Password:");
-        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 510, -1, -1));
+        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 540, -1, -1));
 
         fullnme.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -106,32 +110,51 @@ public class UpdateFM extends javax.swing.JFrame {
                 fullnmeKeyTyped(evt);
             }
         });
-        getContentPane().add(fullnme, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 220, 330, 50));
+        getContentPane().add(fullnme, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 210, 330, 50));
 
-        regPswd.addActionListener(new java.awt.event.ActionListener() {
+        updtePswd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                regPswdActionPerformed(evt);
+                updtePswdActionPerformed(evt);
             }
         });
-        getContentPane().add(regPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 430, 330, 50));
-
-        regConfrmPswd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                regConfrmPswdActionPerformed(evt);
+        updtePswd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                updtePswdKeyReleased(evt);
             }
         });
-        getContentPane().add(regConfrmPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 500, 330, 50));
+        getContentPane().add(updtePswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 450, 330, 50));
 
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setText("Update");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 580, 150, 40));
+        updteConfrmPswd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updteConfrmPswdActionPerformed(evt);
+            }
+        });
+        updteConfrmPswd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                updteConfrmPswdKeyReleased(evt);
+            }
+        });
+        getContentPane().add(updteConfrmPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 530, 330, 50));
+
+        Update.setBackground(new java.awt.Color(51, 51, 255));
+        Update.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        Update.setText("Update");
+        Update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Update, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 610, 150, 40));
 
         jLabel5.setBackground(new java.awt.Color(255, 102, 102));
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 153, 0));
         jLabel5.setText("Update Profile");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 40, 290, 110));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 70, 290, 110));
+
+        updtePSWDlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updtePSWDlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(updtePSWDlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 450, 210, 50));
 
         reset.setBackground(new java.awt.Color(255, 153, 51));
         reset.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -141,7 +164,55 @@ public class UpdateFM extends javax.swing.JFrame {
                 resetActionPerformed(evt);
             }
         });
-        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 580, 150, 40));
+        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 610, 150, 40));
+
+        updtFNlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updtFNlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(updtFNlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 210, 220, 50));
+
+        updtePNlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updtePNlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(updtePNlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 370, 240, 50));
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel14.setText("Phone Number:");
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 390, 150, -1));
+
+        phone_num.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                phone_numKeyReleased(evt);
+            }
+        });
+        getContentPane().add(phone_num, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 370, 330, 50));
+
+        updteEmlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updteEmlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(updteEmlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 290, 210, 50));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 30)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel6.setText("X");
+        jLabel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel6MouseClicked(evt);
+            }
+        });
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1330, 10, 40, 40));
+
+        updteCNFMPSWDlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        updteCNFMPSWDlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(updteCNFMPSWDlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 530, 210, 50));
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel3.setText("-");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 10, 34, 40));
 
         email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,6 +220,9 @@ public class UpdateFM extends javax.swing.JFrame {
             }
         });
         email.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                emailKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 emailKeyTyped(evt);
             }
@@ -166,12 +240,17 @@ public class UpdateFM extends javax.swing.JFrame {
     }//GEN-LAST:event_fullnmeActionPerformed
 
     private void fullnmeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fullnmeKeyTyped
-        char c = evt.getKeyChar();
-        if(!(Character.isAlphabetic(c) || (c == KeyEvent.VK_DELETE)||Character.isLowerCase(c)||Character.isUpperCase(c) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_SPACE))){
-            JOptionPane.showMessageDialog(null, "Can not insert numeric values");
+        char c1 = evt.getKeyChar();
+        if(!((Character.isAlphabetic(c1)) || (c1 == KeyEvent.VK_DELETE) || (Character.isLowerCase(c1)) || (Character.isUpperCase(c1)) || (c1 == KeyEvent.VK_BACK_SPACE) || (c1 == KeyEvent.VK_SPACE))){
+           updtFNlab.setText("naming is incorrect");
             evt.consume();
+        }
+        else{
+            updtFNlab.setText(null);
+          
+        }
     }//GEN-LAST:event_fullnmeKeyTyped
-    }
+
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailActionPerformed
@@ -180,27 +259,165 @@ public class UpdateFM extends javax.swing.JFrame {
 
     }//GEN-LAST:event_emailKeyTyped
 
-    private void regusrnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regusrnameActionPerformed
+    private void updtePswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updtePswdActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_regusrnameActionPerformed
+    }//GEN-LAST:event_updtePswdActionPerformed
 
-    private void regPswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regPswdActionPerformed
+    private void updteConfrmPswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updteConfrmPswdActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_regPswdActionPerformed
-
-    private void regConfrmPswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regConfrmPswdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_regConfrmPswdActionPerformed
+    }//GEN-LAST:event_updteConfrmPswdActionPerformed
 
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
         fullnme.setText("");
         email.setText("");
-        regusrname.setText("");
-        regPswd.setText("");
-        regConfrmPswd.setText("");
+        phone_num.setText("");
+        updtePswd.setText("");
+        updteConfrmPswd.setText("");
         reset.setSelected(false);
 
     }//GEN-LAST:event_resetActionPerformed
+
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
+        
+          
+       
+        String fn = fullnme.getText();
+        String em = email.getText();
+        String pn = phone_num.getText();
+        String pswd = updtePswd.getText();
+        String pswd1 = updteConfrmPswd.getText();
+        
+        
+        try{
+            
+            
+            
+            if((em.equals("") && pswd1.equals("") && pswd.equals("") && fn.equals("")))  {
+                  
+                    
+                     JOptionPane.showMessageDialog(null, "Fileds cannot be empty!");
+                    
+                }
+            
+            
+            
+            else if(fn.equals("")){
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+             else if((em.equals("")))
+              
+              {
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+              } 
+               
+              
+           
+            else if(pswd.equals("")){
+                    JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+            else if(pswd1.equals("")){
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+            else{
+          
+                 
+                if(!pswd.matches(pswd1)){
+                    
+                     JOptionPane.showMessageDialog(null, "Password doesn't match.Please check again!","Error", JOptionPane.ERROR_MESSAGE);
+                    
+                }
+                else if((!em.matches("^[a-zA-Z0-9]+[@]{1}+[a-zA-Z0-9]+[.]{1}+[a-zA-Z0-9]+$")))
+              {
+                JOptionPane.showMessageDialog(null, "Please enter a valid email", "Error", JOptionPane.ERROR_MESSAGE);
+                
+              }
+                else if((!pn.matches("^[0-9]{10}"))){
+                       JOptionPane.showMessageDialog(null, "Please enter a valid phone number", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+               
+                else{
+                    
+                      
+                      user.setEmail(em);
+                      user.setFullName(fn);
+                      user.setPassword(pswd);
+                      user.setPhoneNumber(pn);
+                      hc.updateUser(user);
+                    
+                     JOptionPane.showMessageDialog(null, "Successfully Updated");
+               
+                }
+               
+            }
+        }
+            catch(Exception e){
+                System.out.println("ERROR: " + e.getMessage());
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Update failure. Try again!","Error", JOptionPane.ERROR_MESSAGE);
+                
+                    }
+
+        
+    }//GEN-LAST:event_UpdateActionPerformed
+
+    private void emailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailKeyReleased
+         String PATTERN = ("^[a-zA-Z0-9]+[@]{1}+[a-zA-Z0-9]+[.]{1}+[a-zA-Z0-9]+$");
+       Pattern patt1 = Pattern.compile(PATTERN);
+       Matcher match1 = patt1.matcher(email.getText());
+       if(!match1.matches()){
+            updteEmlab.setText("Email in incorrect");
+       }
+       else{
+        updteEmlab.setText(null);
+            
+    }                            
+    }//GEN-LAST:event_emailKeyReleased
+
+    private void updtePswdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_updtePswdKeyReleased
+          String PATTERN = ("^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$");
+       Pattern patt1 = Pattern.compile(PATTERN);
+       Matcher match1 = patt1.matcher(updtePswd.getText());
+       if(!match1.matches()){
+             updtePSWDlab.setText("Password is incorrect");
+       }
+       else{
+           updtePSWDlab.setText(null);
+            
+    }                           
+    }//GEN-LAST:event_updtePswdKeyReleased
+
+    private void updteConfrmPswdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_updteConfrmPswdKeyReleased
+          String pswd = updtePswd.getText();
+        String pswd1 = updteConfrmPswd.getText();
+        if((!pswd.equals(pswd1))){
+                            updteCNFMPSWDlab.setText("Password doesn't match!");
+                 }
+      else if((pswd.equals(pswd1))){
+       updteCNFMPSWDlab.setText("Password matched");
+    }                                         
+        
+    }//GEN-LAST:event_updteConfrmPswdKeyReleased
+
+    private void phone_numKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phone_numKeyReleased
+
+        String pn = phone_num.getText();
+        if(!pn.matches("^[0-9]{10}")){
+            updtePNlab.setText("Phone number is invalid");
+
+        }
+        else{
+          updtePNlab.setText(null);
+        }
+
+    }//GEN-LAST:event_phone_numKeyReleased
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        this.setState(JFrame.ICONIFIED);
+    }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_jLabel6MouseClicked
 
     /**
      * @param args the command line arguments
@@ -238,22 +455,27 @@ public class UpdateFM extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField email;
-    private javax.swing.JTextField fullnme;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton Update;
+    public javax.swing.JTextField email;
+    public javax.swing.JTextField fullnme;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPasswordField regConfrmPswd;
-    private javax.swing.JPasswordField regPswd;
-    private javax.swing.JTextField regusrname;
+    private javax.swing.JTextField phone_num;
     private javax.swing.JButton reset;
+    public javax.swing.JLabel updtFNlab;
+    public javax.swing.JLabel updteCNFMPSWDlab;
+    private javax.swing.JPasswordField updteConfrmPswd;
+    public javax.swing.JLabel updteEmlab;
+    private javax.swing.JLabel updtePNlab;
+    public javax.swing.JLabel updtePSWDlab;
+    private javax.swing.JPasswordField updtePswd;
     // End of variables declaration//GEN-END:variables
 }

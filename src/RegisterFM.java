@@ -1,8 +1,15 @@
 
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,13 +22,15 @@ import javax.swing.JOptionPane;
  * @author SNDJ
  */
 public class RegisterFM extends javax.swing.JFrame {
-
-    /**
-     * Creates new form RegisterFM
-     */
+        Connection conn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+   
     public RegisterFM() {
         initComponents();
          this.setLocationRelativeTo(null);
+         
+       
         
     }
 
@@ -37,27 +46,30 @@ public class RegisterFM extends javax.swing.JFrame {
         regRegstr = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        regusrname = new javax.swing.JTextField();
         regConfrmPswd = new javax.swing.JPasswordField();
         reset = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         fullnme = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
         email = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
+        userType = new javax.swing.JComboBox<>();
+        fnlab = new javax.swing.JLabel();
+        userId = new javax.swing.JLabel();
         regPswd = new javax.swing.JPasswordField();
+        emlab = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        phone_num = new javax.swing.JTextField();
+        pswdLab = new javax.swing.JLabel();
+        cnfmpswdlab = new javax.swing.JLabel();
+        fnlab2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        pnreglab = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        SlctjComboBox1 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -67,12 +79,17 @@ public class RegisterFM extends javax.swing.JFrame {
         regRegstr.setBackground(new java.awt.Color(51, 51, 255));
         regRegstr.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         regRegstr.setText("Register");
+        regRegstr.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                regRegstrMouseClicked(evt);
+            }
+        });
         regRegstr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 regRegstrActionPerformed(evt);
             }
         });
-        getContentPane().add(regRegstr, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 640, 160, 40));
+        getContentPane().add(regRegstr, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 620, 160, 40));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 3, 45)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 0));
@@ -87,21 +104,19 @@ public class RegisterFM extends javax.swing.JFrame {
                 jLabel13MouseClicked(evt);
             }
         });
-        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 690, 180, 30));
-
-        regusrname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                regusrnameActionPerformed(evt);
-            }
-        });
-        getContentPane().add(regusrname, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 420, 330, 50));
+        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 670, 180, 30));
 
         regConfrmPswd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 regConfrmPswdActionPerformed(evt);
             }
         });
-        getContentPane().add(regConfrmPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 560, 330, 50));
+        regConfrmPswd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                regConfrmPswdKeyReleased(evt);
+            }
+        });
+        getContentPane().add(regConfrmPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 540, 330, 50));
 
         reset.setBackground(new java.awt.Color(255, 153, 51));
         reset.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -111,12 +126,12 @@ public class RegisterFM extends javax.swing.JFrame {
                 resetActionPerformed(evt);
             }
         });
-        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 640, 150, 40));
+        getContentPane().add(reset, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 620, 150, 40));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 0, 0));
         jLabel11.setText("Password:");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 490, 90, -1));
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 480, 90, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(255, 0, 0));
@@ -125,18 +140,13 @@ public class RegisterFM extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel14.setText("User Type:");
-        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 360, 110, -1));
+        jLabel14.setText("Phone Number:");
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 350, 150, -1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 0, 0));
         jLabel7.setText("Full Name:");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 230, -1, -1));
-
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel10.setText("User Name:");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 430, 110, -1));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 210, -1, -1));
 
         fullnme.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,11 +154,14 @@ public class RegisterFM extends javax.swing.JFrame {
             }
         });
         fullnme.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                fullnmeKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 fullnmeKeyTyped(evt);
             }
         });
-        getContentPane().add(fullnme, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 210, 330, 50));
+        getContentPane().add(fullnme, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 190, 330, 50));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 30)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 153, 0));
@@ -163,12 +176,7 @@ public class RegisterFM extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 0, 0));
         jLabel9.setText("Email Address:");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 300, -1, -1));
-
-        jButton5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 0, 204));
-        jButton5.setText("Login");
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 310, -1, 30));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 280, -1, -1));
 
         email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,49 +184,85 @@ public class RegisterFM extends javax.swing.JFrame {
             }
         });
         email.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                emailKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 emailKeyTyped(evt);
             }
         });
-        getContentPane().add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 280, 330, 50));
+        getContentPane().add(email, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 260, 330, 50));
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(0, 0, 204));
-        jButton6.setText("Register");
-        jButton6.setMaximumSize(new java.awt.Dimension(71, 25));
-        jButton6.setMinimumSize(new java.awt.Dimension(71, 25));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        userType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seller", "Buyer" }));
+        userType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                userTypeActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 440, -1, 30));
+        getContentPane().add(userType, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 400, 330, 50));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seller", "Buyer" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 350, 330, 50));
+        fnlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        fnlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(fnlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 190, 180, 50));
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel8.setText("UserID");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 180, 60, -1));
+        userId.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        userId.setForeground(new java.awt.Color(255, 0, 0));
+        userId.setText("UserID");
+        getContentPane().add(userId, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 160, 60, -1));
 
         regPswd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 regPswdActionPerformed(evt);
             }
         });
-        getContentPane().add(regPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 490, 330, 50));
+        regPswd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                regPswdKeyReleased(evt);
+            }
+        });
+        getContentPane().add(regPswd, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 470, 330, 50));
+
+        emlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        emlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(emlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 260, 190, 50));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 0, 0));
         jLabel6.setText("UserID:");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 180, 90, 20));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 160, 90, 20));
+
+        phone_num.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                phone_numKeyReleased(evt);
+            }
+        });
+        getContentPane().add(phone_num, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 330, 330, 50));
+
+        pswdLab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        pswdLab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(pswdLab, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 470, 180, 50));
+
+        cnfmpswdlab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        cnfmpswdlab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(cnfmpswdlab, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 540, 180, 50));
+
+        fnlab2.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(fnlab2, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 210, 180, 50));
 
         jLabel5.setBackground(new java.awt.Color(255, 102, 102));
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 153, 0));
         jLabel5.setText("Register Form");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 50, 290, 110));
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel15.setText("User Type:");
+        getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 420, 110, -1));
+
+        pnreglab.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        pnreglab.setForeground(new java.awt.Color(255, 0, 0));
+        getContentPane().add(pnreglab, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 330, 250, 50));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 153, 0));
@@ -230,17 +274,9 @@ public class RegisterFM extends javax.swing.JFrame {
         });
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 10, 34, 40));
 
-        SlctjComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        SlctjComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SlctjComboBox1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(SlctjComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 140, -1, -1));
-
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/computer-macbook-air-business-desktop.jpg"))); // NOI18N
         jLabel1.setText("jLabel1");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-160, 0, 1540, 750));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1390, 730));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -258,23 +294,25 @@ public class RegisterFM extends javax.swing.JFrame {
     }//GEN-LAST:event_fullnmeActionPerformed
 
     private void fullnmeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fullnmeKeyTyped
-        char c = evt.getKeyChar();
-        if(!(Character.isAlphabetic(c) || (c == KeyEvent.VK_DELETE)||Character.isLowerCase(c)||Character.isUpperCase(c) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_SPACE))){
-            JOptionPane.showMessageDialog(null, "Can not insert numeric values");
+       char c = evt.getKeyChar();
+        if(!((Character.isAlphabetic(c)) || (c == KeyEvent.VK_DELETE) || (Character.isLowerCase(c)) || (Character.isUpperCase(c)) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_SPACE))){
+            fnlab.setText("naming is incorrect");
             evt.consume();
+        }
+        else{
+            fnlab.setText(null);
+          
+        }
+          
     }//GEN-LAST:event_fullnmeKeyTyped
-    }
+    
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailActionPerformed
 
     private void emailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailKeyTyped
-
+        
     }//GEN-LAST:event_emailKeyTyped
-
-    private void regusrnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regusrnameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_regusrnameActionPerformed
 
     private void regPswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regPswdActionPerformed
         // TODO add your handling code here:
@@ -287,7 +325,7 @@ public class RegisterFM extends javax.swing.JFrame {
     private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
              fullnme.setText("");
              email.setText("");
-             regusrname.setText("");
+             phone_num.setText("");
              regPswd.setText("");
              regConfrmPswd.setText("");
              reset.setSelected(false);
@@ -295,25 +333,91 @@ public class RegisterFM extends javax.swing.JFrame {
     }//GEN-LAST:event_resetActionPerformed
 
     private void regRegstrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regRegstrActionPerformed
-
-        String email1 = email.getText();
-
-        if (!(Pattern.matches("^[a-zA-Z0-9]+[@]{1}+[a-zA-Z0-9]+[.]{1}+[a-zA-Z0-9]+$", email.getText())))
-        {
-
-            JOptionPane.showMessageDialog(null, "Please enter a valid email", "Error", JOptionPane.ERROR_MESSAGE);
-
+        
+        HttpConnector hc = new HttpConnector();
+        Accounts ac = new Accounts();
+        String fn = fullnme.getText();
+        String em = email.getText();
+        String pn = phone_num.getText();
+        String ut = (String) userType.getSelectedItem();
+        String pswd = regPswd.getText();
+        String pswd1 = regConfrmPswd.getText();
+        
+       
+        try{
+            
+            
+            
+            if((em.equals("") && pswd1.equals("") && pswd.equals("") && fn.equals("")))  {
+                  
+                    
+                     JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+                    
+                }
+            
+            
+            
+            else if(fn.equals("")){
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+             else if((em.equals("")))
+              
+              {
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+              } 
+              else if((pn.equals("")))
+              
+              {
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+              } 
+               
+             else if(pswd.equals("")){
+                    JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+            else if(pswd1.equals("")){
+                JOptionPane.showMessageDialog(null, "Please complete all the fields!");
+            }
+            else{
+                
+                if(!pswd.matches(pswd1)){
+                    
+                     JOptionPane.showMessageDialog(null, "Password doesn't match.Please check again!","Error", JOptionPane.ERROR_MESSAGE);
+                    
+                }
+                else if((!em.matches("^[a-zA-Z0-9]+[@]{1}+[a-zA-Z0-9]+[.]{1}+[a-zA-Z0-9]+$")))
+              {
+                JOptionPane.showMessageDialog(null, "Please enter a valid email", "Error", JOptionPane.ERROR_MESSAGE);
+                
+              }
+                else if((!pn.matches("^[0-9]{10}"))){
+                       JOptionPane.showMessageDialog(null, "Please enter a valid phone number", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+               
+                else{
+                     
+                     
+                      User user = new User();
+                      user.setEmail(em);
+                      user.setFullName(fn);
+                      user.setPassword(pswd);
+                      user.setPhoneNumber(pn);
+                      user.setUserType(ut);
+                      
+                      
+                      hc.createUser(user);
+        
+                     JOptionPane.showMessageDialog(null, "Successfully Registered");
+               
+                }
+               
+            }
         }
-        if  (!(email.equals("") )){
+           catch (Exception ex) {
+               JOptionPane.showMessageDialog(null, "Registration failed.Try again!","Error", JOptionPane.ERROR_MESSAGE);
+            }
 
-            JOptionPane.showMessageDialog(null, "Please enter a valid email", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
+       
     }//GEN-LAST:event_regRegstrActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jLabel13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel13MouseClicked
         LoginFM lg = new LoginFM();
@@ -324,10 +428,84 @@ public class RegisterFM extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jLabel13MouseClicked
 
-    private void SlctjComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SlctjComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SlctjComboBox1ActionPerformed
+    private void userTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userTypeActionPerformed
+            String selectedValue = userType.getSelectedItem().toString(); //get the value from combobox
+        
+            userType.setSelectedItem(selectedValue);
+    }//GEN-LAST:event_userTypeActionPerformed
 
+    private void regRegstrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_regRegstrMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_regRegstrMouseClicked
+
+    private void emailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailKeyReleased
+        
+       String PATTERN = ("^[a-zA-Z0-9]+[@]{1}+[a-zA-Z0-9]+[.]{1}+[a-zA-Z0-9]+$");
+       Pattern patt1 = Pattern.compile(PATTERN);
+       Matcher match1 = patt1.matcher(email.getText());
+       if(!match1.matches()){
+             emlab.setText("Email in incorrect");
+       }
+       else{
+        emlab.setText(null);
+            
+    }//GEN-LAST:event_emailKeyReleased
+    }
+    private void fullnmeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fullnmeKeyReleased
+       /*
+       String PATTERN = ("^[a-zA-Z0]{0,30}$");
+       Pattern patt = Pattern.compile(PATTERN);
+       Matcher match = patt.matcher(fullnme.getText());
+       if(!match.matches()){
+                fnlab.setText("naming is incorrect");
+       }
+        else{
+              fnlab.disable();
+            
+    }       
+         */
+       
+    }//GEN-LAST:event_fullnmeKeyReleased
+
+    private void regPswdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_regPswdKeyReleased
+       String PATTERN = ("^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$");
+       Pattern patt1 = Pattern.compile(PATTERN);
+       Matcher match1 = patt1.matcher(regPswd.getText());
+       if(!match1.matches()){
+             pswdLab.setText("Password is incorrect");
+       }
+       else{
+            pswdLab.setText(null);
+            
+    }                           
+    }//GEN-LAST:event_regPswdKeyReleased
+
+    private void regConfrmPswdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_regConfrmPswdKeyReleased
+        
+        String pswd = regPswd.getText();
+        String pswd1 = regConfrmPswd.getText();
+        if((!pswd.equals(pswd1))){
+                            cnfmpswdlab.setText("Password doesn't match!");
+                 }
+      else if((pswd.equals(pswd1))){
+       cnfmpswdlab.setText("Password matched");
+    }//GEN-LAST:event_regConfrmPswdKeyReleased
+    }
+    private void phone_numKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phone_numKeyReleased
+           
+             String pn = phone_num.getText();
+        if(!pn.matches("^[0-9]{10}")){
+                   pnreglab.setText("Phone number is invalid");
+         
+               }
+        else{
+              pnreglab.setText(null);
+        }
+        
+              
+    }//GEN-LAST:event_phone_numKeyReleased
+
+    
     /**
      * @param args the command line arguments
      */
@@ -364,30 +542,33 @@ public class RegisterFM extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> SlctjComboBox1;
-    private javax.swing.JTextField email;
-    private javax.swing.JTextField fullnme;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel cnfmpswdlab;
+    public javax.swing.JTextField email;
+    private javax.swing.JLabel emlab;
+    private javax.swing.JLabel fnlab;
+    private javax.swing.JLabel fnlab2;
+    public javax.swing.JTextField fullnme;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    public javax.swing.JTextField phone_num;
+    private javax.swing.JLabel pnreglab;
+    private javax.swing.JLabel pswdLab;
     private javax.swing.JPasswordField regConfrmPswd;
     private javax.swing.JPasswordField regPswd;
     private javax.swing.JButton regRegstr;
-    private javax.swing.JTextField regusrname;
     private javax.swing.JButton reset;
+    public javax.swing.JLabel userId;
+    public javax.swing.JComboBox<String> userType;
     // End of variables declaration//GEN-END:variables
 }
