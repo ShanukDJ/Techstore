@@ -19,6 +19,7 @@ import com.sellnbye.inventoryservice.repository.TypeRepository;
  *
  */
 
+//in spring boot have to use service annotion in DAO class
 @Service
 public class TypeDAO {
 	
