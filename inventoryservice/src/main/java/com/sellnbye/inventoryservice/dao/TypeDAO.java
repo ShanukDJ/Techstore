@@ -6,6 +6,7 @@ package com.sellnbye.inventoryservice.dao;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.sellnbye.inventoryservice.model.Type;
 import com.sellnbye.inventoryservice.repository.TypeRepository;
@@ -17,6 +18,8 @@ import com.sellnbye.inventoryservice.repository.TypeRepository;
  * using the typerepostitory and the model class
  *
  */
+
+@Service
 public class TypeDAO {
 	
 	//create a object typerepostitory
