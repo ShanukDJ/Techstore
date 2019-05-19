@@ -7,6 +7,7 @@ package paf01;
 
 /**
  *
+ * 
  * @author ⚡ FLASH ⚡
  */
 public class PAF01 {
@@ -19,3 +20,4 @@ public class PAF01 {
     }
     
 }
+

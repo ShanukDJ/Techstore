@@ -5,6 +5,7 @@
  */
 package interfaces;
 
+
 /**
  *
  * @author ⚡ FLASH ⚡

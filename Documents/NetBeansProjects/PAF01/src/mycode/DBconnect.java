@@ -8,6 +8,7 @@ package mycode;
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
 
+
 /**
  *
  * @author ⚡ FLASH ⚡
@@ -27,3 +28,4 @@ public class DBconnect {
         
     }
 }
+
