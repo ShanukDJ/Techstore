@@ -1,1 +1,1 @@
-# SellNBye
+In this repository there are two projects. But same running system. One of it is a rar file named profileapi. It was developed in the IntelliJ IDEA IDE in springboot for develop APIs.Other files are related to the interfaces. It was developed in NetBeans IDE. You need to import those projects in to two IDEs seperately. Then open the wampServer and get the PhpMyAdmin with MySQL. Cerate a database and import the database file in to the PhpMyAdmin. You need to change the ids, database name, table names, localhost ports etc. Then run it.
