@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeLeaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Supplier Management</title>
+</head>
+<body>
+<div align="center">
+	<h1>Supplier Management</h1>
+	<a href="new">Add New Supplier</a>
+	<br/><br/> 
+	<table boarder="1" cellpadding="10">
+		<thead>
+			<tr>
+				<th>Supplier ID</th>
+				<th>Supplier Name</th>
+				<th>Contact No</th>
+				<th>Type</th>
+			</tr>
+		</thead>>
+		<tbody>
+			<tr th:each="supplier : ${ListSupplier}">
+				<td th:text="${supplier.id}">Supplier ID </td>
+				<td th:text="${supplier.name}">Name </td>
+				<td th:text="${supplier.contact}">Contact No </td>
+				<td th:text="${supplier.type}">Type </td>
+				<td>
+					<a th:href="@{'/edit/' + ${supplier.id}}">Edit</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a th:href="@{'/delete/' + ${supplier.id}}">Delete</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
