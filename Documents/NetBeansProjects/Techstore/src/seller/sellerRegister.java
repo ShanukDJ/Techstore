@@ -6,6 +6,8 @@ package seller;
  *
  * @author Deneth A Perera
  */
+
+
 public class sellerRegister {
     
     private int id;
@@ -73,6 +75,7 @@ public class sellerRegister {
         return picture;
     }
 }
+
 
 
 

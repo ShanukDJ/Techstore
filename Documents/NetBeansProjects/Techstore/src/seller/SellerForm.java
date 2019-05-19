@@ -6,10 +6,6 @@
 package seller;
 
 
-//import java.sql.Statement;
-//import java.sql.PreparedStatement;
-
-
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 import java.awt.Color;

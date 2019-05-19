@@ -1,5 +1,7 @@
 package seller;
 
+
+
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 import java.awt.Color;
