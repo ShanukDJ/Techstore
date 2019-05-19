@@ -15,16 +15,16 @@ import javax.persistence.Id;
 
 @Entity
 public class Type {
-
-	private long id;
-	private String type;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	long id;
+	String type;
 
 	public Type() {
 
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	public long getId() {
 		return id;
 	}

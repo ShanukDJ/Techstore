@@ -20,7 +20,7 @@ public class TypeService {
 	}
 	
 	/*to save a type*/
-	private void save(Type type) {
+	public void save(Type type) {
 		typeRepository.save(type);
 	}
 	
